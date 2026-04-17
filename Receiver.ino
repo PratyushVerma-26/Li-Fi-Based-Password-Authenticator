@@ -42,10 +42,6 @@ const char* CNAME[]   = {
 };
 int storedSeq[PASS_LEN];
  
-// ── THE LOOKUP TABLE FIX ───────────────────────────────
-// bits = (r<<2)|(g<<1)|b  where r/g/b = 0 or 1
-// Maps each 3-bit combination to the correct color index
-// matching the TX color lookup table (CR/CG/CB arrays).
 const int RGB_TO_IDX[8] = {
   -1,  // 000 → no signal
    2,  // 001 → B only     → BLUE    (index 2)
@@ -56,9 +52,6 @@ const int RGB_TO_IDX[8] = {
    3,  // 110 → R+G        → YELLOW  (index 3)
    6,  // 111 → R+G+B      → WHITE   (index 6)
 };
-// Note: VIOLET (index 7) is not used in LIFI2024 but
-// would appear if a char with (ASCII mod 8)==7 is used.
- 
 // ── LED control ────────────────────────────────────────
 void setLED(int r, int g, int b) {
   analogWrite(LED_R, r);
@@ -96,9 +89,6 @@ bool isCyan() {
          readCh(SIG_B) > THRESHOLD;
 }
  
-// ── Windowed majority-vote read ─────────────────────────
-// Samples all three channels repeatedly for windowMs ms.
-// Returns the color index using RGB_TO_IDX lookup table.
 int readIdxWindowed(int windowMs) {
   int rV = 0, gV = 0, bV = 0, n = 0;
   unsigned long t = millis();
